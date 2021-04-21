@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Reais para Dólares</title>
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+      integrity="sha512-iBBXm8fW90+nuLcSKlbmrPcLa0OT92xO1BIsZ+ywDWZCvqsWgccV3gFoRBv0z+8dLJgyAHIhR35VZc2oM/gI1w=="
+      crossorigin="anonymous"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap"
+      rel="stylesheet"
+    />
+
+    <style>
+      body,
+      html {
+        background-color: rgb(230, 230, 230);
+        font-family: "Patrick Hand", cursive;
+      }
+      .main {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        width: 100vw;
+      }
+      .todo-cel {
+        border-radius: 15px;
+        display: flex;
+        flex-direction: column;
+        width: 280px;
+        height: 550px;
+        justify-content: space-between;
+        box-shadow: 0px 10px 14px rgba(0, 0, 0, 0.2);
+      }
+      [class^="cel-"] {
+        background-color: white;
+      }
+      .cel-header,
+      .cel-footer {
+        border: 2px solid black;
+        height: 60px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+      .cen {
+        border: 2px solid black;
+        width: 80px;
+        height: 5px;
+        border-radius: 20px;
+      }
+      .camera {
+        border: 2px solid black;
+        width: 5px;
+        height: 5px;
+        border-radius: 10px;
+        margin-right: 20px;
+        margin-left: -20px;
+      }
+      .cel-header {
+        border-bottom: none;
+        border-radius: 15px 15px 0 0;
+      }
+      .cel-footer {
+        border-top: none;
+        border-radius: 0 0 15px 15px;
+      }
+      .cel-centro {
+        height: 100%;
+        display: flex;
+        justify-content: space-between;
+      }
+      .cel-left,
+      .cel-right {
+        width: 5px;
+      }
+      .cel-right {
+        border-right: 2px solid black;
+      }
+      .cel-left {
+        border-left: 2px solid black;
+      }
+      .cel-display {
+        border: 2px solid black;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        text-align: center;
+      }
+      .barra {
+        text-align: right;
+        background-color: #ccc;
+        font-size: 0.7rem;
+        padding: 0.3rem;
+        color: white;
+      }
+      .barra i,
+      .barra span {
+        margin: 0.2rem;
+      }
+      .barra span {
+        font-size: 0.8rem;
+      }
+      h1 {
+        font-size: 1.2rem;
+        background-color: #dddddd;
+        margin: 2px;
+        padding: 10px;
+        text-align: left;
+        font-weight: normal;
+      }
+      .cifrao {
+        font-size: 3rem;
+        font-weight: bold;
+        margin: 5px auto 0;
+      }
+      .inputs,
+      .botoes {
+        display: flex;
+        justify-content: space-between;
+        width: 150px;
+        margin: 5px auto;
+      }
+      .inputs {
+        flex-direction: column;
+      }
+      input,
+      button {
+        border-radius: 255px 15px 225px 15px/15px 225px 15px 255px;
+        border: 2px solid black;
+        font-family: "Patrick Hand", cursive;
+        font-size: 1rem;
+      }
+      input {
+        margin: 5px 0;
+        padding: 0.4rem;
+      }
+      button {
+        background-color: white;
+        padding: 0.4rem;
+        box-shadow: 3px 3px 0 black;
+        cursor: pointer;
+        outline: none;
+      }
+      button:active {
+        box-shadow: none;
+        transform: translateY(3px);
+      }
+      .resultado {
+        margin: 1.5rem 1rem;
+        font-size: 1.2rem;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="main">
+      <div class="todo-cel">
+        <div class="cel-header">
+          <div class="camera"></div>
+          <div class="cen"></div>
+        </div>
+        <div class="cel-centro">
+          <div class="cel-left"></div>
+          <div class="cel-display" id="app">
+            <div class="barra">
+              <i class="fas fa-wifi"></i>
+              <i class="fas fa-signal"></i>
+              <i class="fas fa-battery-half"></i>
+              <span>18:39</span>
+            </div>
+            <h1>Reais para Dólares</h1>
+            <span class="cifrao">$</span>
+            <form v-on:submit.prevent>
+              <div class="inputs">
+                <input
+                  type="text"
+                  placeholder="Quantidade em Reais"
+                  :disabled="calculado"
+                  v-model="reais"
+                />
+                <input
+                  type="text"
+                  placeholder="Cotação do Dólar"
+                  :disabled="calculado"
+                  v-model="cotacao"
+                />
+              </div>
+              <div class="botoes">
+                <button type="reset" :disabled="limpar" @click="limparCampos()">
+                  Limpar
+                </button>
+                <button
+                  type="submit"
+                  :disabled="camposVazios"
+                  @click="calcular()"
+                >
+                  Calcular
+                </button>
+              </div>
+              <div class="resultado" v-if="calculado">
+                Com R$ {{reais}} é possível comprar US$ {{dolares}} a R$
+                {{cotacao}} cada.
+              </div>
+            </form>
+          </div>
+          <div class="cel-right"></div>
+        </div>
+        <div class="cel-footer">
+          <div class="cen"></div>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+    <script>
+      const vm = new Vue({
+        el: "#app",
+        data: {
+          reais: "",
+          cotacao: "",
+          dolares: "",
+          calculado: false,
+          camposVazios: true,
+          limpar: true,
+        },
+        methods: {
+          calcular() {
+            this.dolares = (this.reais / this.cotacao).toFixed(2);
+            this.calculado = true;
+            this.camposVazios = true;
+          },
+          limparCampos() {
+            this.reais = "";
+            this.cotacao = "";
+            this.dolares = "";
+            this.calculado = false;
+            this.camposVazios = true;
+            this.limpar = true;
+          },
+        },
+        computed: {
+          campos() {
+            return [this.reais, this.cotacao].join();
+          },
+        },
+        watch: {
+          campos() {
+            this.reais != "" && this.cotacao != ""
+              ? (this.camposVazios = false)
+              : (this.camposVazios = true);
+            this.reais != "" || this.cotacao != ""
+              ? (this.limpar = false)
+              : (this.limpar = true);
+          },
+        },
+      });
+    </script>
+  </body>
+</html>
